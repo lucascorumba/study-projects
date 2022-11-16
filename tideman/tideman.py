@@ -165,9 +165,9 @@ def lock(edge: Settled) -> Pair:
     return edge[0], edge[1]
 
 
-def resolve_matchups(pairs: list[tuple[Pair]], votes: list[list[str]]) -> Settled:
+def resolve_matchups(pairs: list[tuple[Pair]], votes: list[list[str]]) -> list[Settled]:
     """
-    Resolves all matchups individually, returning a 'Settled' tuple.
+    Resolves all matchups individually, returning a list of 'Settled' tuples.
     """
     matchups = list()
     for pair in pairs:
