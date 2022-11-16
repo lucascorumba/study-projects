@@ -41,3 +41,8 @@ But notice that if we add the last edge, there will be no source node left. So t
 ![step-by-step lock process](../readme-imgs/lockin.png)
 
 Based on the resulting graph, Charlie is the winner of the ballot.
+
+## Usage
+```py
+python3 tideman.py
+```
