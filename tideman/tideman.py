@@ -3,15 +3,15 @@ import re
 
 
 
-class Node():
+class Candidate():
     def __init__(self, name: str):
         self.name = name
-        # point to another Node instance - means the current instance is the matchup winner
+        # point to another Candidate instance - means the current instance is the matchup winner
         self.points_to = list()
         self.is_source = True
 
     # insert edge if current instance wins matchup
-    def lock_edge(self, node: 'Node'):
+    def lock_edge(self, node: 'Candidate'):
         self.points_to.append(node)
         node.is_source = False 
 
@@ -20,15 +20,15 @@ class Node():
 
 
 # type alias for a pair of candidates
-Pair = tuple[Node, Node]
+Pair = tuple[Candidate, Candidate]
 # type alias for a resolved matchup - (winner_candidate, loser_candidate, margin)
-Settled = tuple[Node, Node, int]
+Settled = tuple[Candidate, Candidate, int]
 
 
-def initialize_ballot() -> list[Node]:
+def initialize_ballot() -> list[Candidate]:
     """
     Prompt user for candidate names and enforce minimum number of candidates.
-    Returns a list of Nodes.
+    Returns a list of Candidate instances.
     """
     # prompt message
     print("Commencing ballot... \nPlease, insert at least two candidates names (separated by space)")
@@ -37,12 +37,12 @@ def initialize_ballot() -> list[Node]:
         # enforce minimum number of candidates
         if len(candidate_names) < 2:
             print("There should be at least two candidates for the ballot")
-        # initialize Node objects and return a list of them
+        # initialize Candidate objects and return a list of them
         else:
-            return [Node(candidate) for candidate in candidate_names]
+            return [Candidate(candidate) for candidate in candidate_names]
 
 
-def get_vote(candidates: list[Node], names: list[str]) -> list[str]:
+def get_vote(candidates: list[Candidate], names: list[str]) -> list[str]:
     """
     Promp user for votes.
     When prompted, the user should type the candidate's name correctly, otherwise
@@ -68,15 +68,15 @@ You may select your most preferred candidate first, and the least preferred last
     return rank
 
 
-def make_pairs(li: list[Node]) -> list[tuple[Pair]]:
+def make_pairs(li: list[Candidate]) -> list[tuple[Pair]]:
     """
-    Takes a list of Node instances and combines them in all possible ways, returning a list containing
+    Takes a list of Candidate instances and combines them in all possible ways, returning a list containing
     each combination in tuples. [(candidade_A, candidate_Xi), ..., (candidade_A, candidate_Xn)]
     """
     return list(combinations(li, 2))
 
 
-def get_preferences(candidates: list[Node]) -> list[list[str]]:
+def get_preferences(candidates: list[Candidate]) -> list[list[str]]:
     """
     Keeps a loop to register voters preferences among the candidates. The loop can be terminated
     after a voter selects all of it's preferences. Each vote 'session' produces a list 
@@ -130,7 +130,7 @@ def sort(matchups: list[Settled]) -> None:
     return 
 
 
-def check_cycle(current: Node, visited: list[Node]) -> bool:
+def check_cycle(current: Candidate, visited: list[Candidate]) -> bool:
     """
     Depth First Search algorithm. Returns 'True' if a cycle is found in the graph.
     """
@@ -167,9 +167,8 @@ def lock(edge: Settled) -> Pair:
 
 def resolve_matchups(pairs: list[tuple[Pair]], votes: list[list[str]]) -> Settled:
     """
-    Resolve all matchups individually.
+    Resolves all matchups individually, returning a list of 'Settled' tuples.
     """
-    # resolve all matchups individually
     matchups = list()
     for pair in pairs:
         winner, loser, margin = tally(pair, votes)
