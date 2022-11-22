@@ -2,12 +2,13 @@
 
 # Usage:
 # import hidden
-# secrets = hidden.secrets()
+# secrets = hidden.pg_secrets()
 
 
 # psql -h host.com -p 5432 -U database user
+# ---> Change dict values to match your credentials
 # The default PostgreSQL port is 5432
-def secrets():
+def pg_secrets():
     return {
         "host": "host.com",
         "port": 5432,

@@ -25,7 +25,10 @@ def get_params():
     Returns query parameters.
     """
     # 'tweet.fields=text' comes by default
-    return {"tweet.fields": ["created_at"]}
+    return {
+        "tweet.fields": "text,created_at,author_id,entities",
+        "max_results": 10
+        }
 
 
 def oauth(r):
