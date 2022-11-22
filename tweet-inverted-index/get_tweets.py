@@ -72,5 +72,4 @@ def paginate(url, params, next=""):
 
 
 if __name__ == "__main__":
-    # tweets()
     print(json.dumps(get_tweets(), indent=4, sort_keys=True, ensure_ascii=False))
