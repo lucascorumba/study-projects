@@ -1,3 +1,5 @@
+#import re
+
 def remove_entities(text, entities, remove):
     """
     Receives original tweet and using the response data removes all entities
@@ -17,3 +19,19 @@ def remove_entities(text, entities, remove):
         except KeyError:
             pass
     return text
+
+
+def clean_text(text):
+    """
+    Receives text and removes emojis, leading and trailing whitespaces,
+    as well as extra spaces between words.
+    To remove emojis and keep portuguese characters, the text is encoded 
+    and decoded using the cp860 encoding.
+    """
+    # remove emojis, leading and trailing whitespaces
+    text = text.encode('cp860', 'ignore').decode('cp860').strip()
+    
+    # regex option: 
+    #   re.sub(r'\s+', ' ', text)
+    # remove extra spaces between words
+    return ' '.join(text.split())
