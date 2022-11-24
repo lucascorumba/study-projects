@@ -1,19 +1,6 @@
-# Inverted Index
+# Study Projects - Data Engineering
 
-## Requirements
-```py
-pip install psycopg2-binary
-```
-```py
-pip install requests
-pip install requests-oauthlib
-```
-
-## Usage
-```
-python3 -m venv venv
-source venv/bin/activate
-```
-```
-export BEARER_TOKEN=<your_bearer_token>
-```
+| Name | Description |
+| :--- | :---------- |
+| [Tideman](tideman) | Run a election using the ranked-choice voting system |
+| [Inverted Index](tweet-inverted-index) | Fetch tweets with Twitter API and make inverted index using PostgreSQL|
