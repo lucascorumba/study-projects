@@ -27,7 +27,7 @@ def get_params():
     # 'tweet.fields=text' comes by default
     return {
         "tweet.fields": "text,created_at,author_id,entities",
-        "max_results": 10
+        "max_results": 25
         }
 
 
