@@ -1,6 +1,6 @@
 import psycopg2
 import hidden
-from get_tweets import get_tweets
+import get_tweets
 import utils
 
 
@@ -19,45 +19,61 @@ sql = "CREATE TABLE IF NOT EXISTS tweet(id BIGINT, body VARCHAR(280) NOT NULL, \
     author_id BIGINT NOT NULL, created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (id));"
 cur.execute(sql)
 
+print("Requesting tweets...")
 # get tweets from a single request (quantity specified in "max_results" parameter)
-tweets = get_tweets()
+tweets = get_tweets.get_tweets()
 
-# counter for inserts in the database
-count = int()
+# counter for inserts in the database / counter for total API requests
+write_count, request_count = int(), int()
 
-# iterate through all tweets
-for i in tweets.get('data'):
-    # tweet text
-    text = i['text']
-    # entities to  be removed
-    remove = ('mentions', 'urls')
-    text = utils.remove_entities(text, i['entities'], remove)
-    
-    # remove emojis, leading and trailing whitespaces
-    text = utils.clean_text(text)
+# get parameters to paginate()
+url, params = get_tweets.create_url(), get_tweets.get_params(max_results=50)
 
-    # skip tweets without text left
-    if len(text) < 1: continue
+# move forward through pages of results
+for tweets in get_tweets.paginate(url, params):
+    # iterate through all tweets in current 'page'
+    for tweet in tweets.get('data'):
+        # tweet text / entities to  be removed
+        text, to_remove = tweet['text'], ('mentions', 'urls')
+        text = utils.remove_entities(text, tweet['entities'], to_remove)
+        
+        # clean and format text
+        text = utils.clean_text(text)
 
-    # get tweet id, author id, created time
-    tweet_id, author_id, created_at = i['id'], i['author_id'], i['created_at']
+        # skip tweets without text left
+        if len(text) < 1: continue
 
-    # insert tweet data into database
-    sql = "INSERT INTO tweet (id, body, author_id, created_at) VALUES (%s, %s, %s, %s) \
-        ON CONFLICT (id) DO NOTHING RETURNING id"
-    cur.execute(sql, (tweet_id, text, author_id, created_at))
+        # get tweet id, author id, created time
+        tweet_id, author_id, created_at = tweet['id'], tweet['author_id'], tweet['created_at']
 
-    # count inserts into database
-    if cur.fetchone() is not None: count = count + 1
+        # insert tweet data into database
+        sql = "INSERT INTO tweet (id, body, author_id, created_at) VALUES (%s, %s, %s, %s) \
+            ON CONFLICT (id) DO NOTHING RETURNING id"
+        cur.execute(sql, (tweet_id, text, author_id, created_at))
 
-    #print(f"\nORIGINAL TWEET: {i['text']}\nCLEANED TWEET: {text}\n\n \
-    #    TWEET {i['id']} - CREATED AT: {i['created_at']}\t BY: {i['author_id']}\n \
-    #    ----------------------------------------------------------------------------------")
+        # count inserts into database
+        if cur.fetchone() is not None: write_count = write_count + 1
 
-print(f"API request retrieved {tweets['meta']['result_count']} tweets")
+        #print(f"\nORIGINAL TWEET: {tweet['text']}\nCLEANED TWEET: {text}\n\n \
+        #    TWEET {tweet['id']} - CREATED AT: {tweet['created_at']}\t BY: {tweet['author_id']}\n \
+        #    ----------------------------------------------------------------------------------")
 
-# commit changes to database and close cursor
-conn.commit()
+    page_count = tweets['meta']['result_count']
+    request_count = request_count + page_count
+    print(f"\t{page_count} tweets in this page ---- Total retrieved: {request_count}")
+
+    # commit changes to database
+    conn.commit()    
+
+    print(f"\tTotal of {write_count} records written on disk\n")
+
+    # conditions to automatically end retrieval
+    if write_count >= 500 or request_count >= 750:
+       break
+
+print("Closing database connection...")
+# close cursor and connection
 cur.close()
+conn.close()
 
-print(f"{count} records written on disk")
+print("Finished retrieval")

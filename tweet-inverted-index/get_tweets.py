@@ -20,14 +20,14 @@ def create_url():
     return f"https://api.twitter.com/2/users/{user_id}/mentions"
 
 
-def get_params():
+def get_params(max_results=10):
     """
     Returns query parameters.
     """
     # 'tweet.fields=text' comes by default
     return {
         "tweet.fields": "text,created_at,author_id,entities",
-        "max_results": 25
+        "max_results": max_results
         }
 
 
@@ -44,8 +44,8 @@ def connect_endpoint(url, params):
     """
     Makes request to API. Returns a JSON response or error log.
     """
-    response = requests.request("GET", url, auth=oauth, params=params)
-    print(response.status_code)    
+    response = requests.request('GET', url, auth=oauth, params=params)
+    print(f"\nResponse status: {response.status_code}")    
     if response.status_code != 200:
         raise Exception(
             f"Request returned an error: {response.status_code} {response.text}"
@@ -55,7 +55,7 @@ def connect_endpoint(url, params):
 
 def get_tweets():
     """
-    Get tweets from endpoint. Return tweets as dicts (JSON format)
+    Get tweets from endpoint. Return response's first set of tweets and metadata.
     """
     url = create_url()
     params = get_params()
@@ -65,10 +65,17 @@ def get_tweets():
 
 def paginate(url, params, next=""):
     """
-    Gets 'next_token' from metadata of previous 'connect_endpoint()' response.
     Recursively requests and yields next set of values.
+    Gets 'next_token' from metadata of previous 'connect_endpoint()' response.
     """
-    raise NotImplementedError
+    if next:
+        full_url = f"{url}?pagination_token={next}"
+    else:
+        full_url = url
+    data = connect_endpoint(full_url, params)
+    yield data
+    if 'next_token' in data.get('meta', {}):
+        yield from paginate(url, params, data['meta']['next_token'])
 
 
 if __name__ == "__main__":
