@@ -40,8 +40,9 @@ for tweets in get_tweets.paginate(url, params):
         # clean and format text
         text = utils.clean_text(text)
 
-        # skip tweets without text left
-        if len(text) < 1: continue
+        # skip tweets without text left and ensures column size limit
+        tweet_len = len(text)
+        if tweet_len < 1 or tweet_len > 280: continue
 
         # get tweet id, author id, created time
         tweet_id, author_id, created_at = tweet['id'], tweet['author_id'], tweet['created_at']
