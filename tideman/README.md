@@ -8,7 +8,7 @@ A lot of this readme (including images) comes from the [problem set specificatio
 ## What is the Tideman method (or ranked-choice system)
 In a ranked-choice system, voters can vote for more than one candidate. Instead of just voting for their top choice, **they can rank the candidates in order of preference**. The resulting ballots might therefore look like the below.
 ![ranked-choice example](../readme-imgs/ranked-ballot.png)
-Here, each voter, in addition to specifying their first preference candidate, has also indicated their second and third choices. A possible tie between Alice and Charlie (if we considered only the top choices) is broken by the last voter's second and third choices.
+Here, each voter, in addition to specifying their first preference candidate, has also indicated their second and third choices. A possible tie between Alice and Bob (if we considered only the top choices) is broken by the last voter's second and third choices.
 
 Ranked choice voting can also solve yet another potential drawback of *plurality* voting.
 
