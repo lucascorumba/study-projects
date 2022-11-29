@@ -68,8 +68,8 @@ for tweets in get_tweets.paginate(url, params):
 
     print(f"\tTotal of {write_count} records written on disk\n")
 
-    # conditions to automatically end retrieval
-    if write_count >= 500 or request_count >= 750:
+    # conditions to automatically end retrieval - this endpoint returns the 800 most recent tweets
+    if write_count >= 650 or request_count >= 750:
        break
 
 print("Closing database connection...")
@@ -78,3 +78,9 @@ cur.close()
 conn.close()
 
 print("Finished retrieval")
+
+# run this SQL command in your client to build the inverted index - also in the .sql file
+# CREATE INDEX gin ON tweet USING gin(to_tsvector('portuguese', body));
+
+# see 'commands.sql' for query examples
+# if you want to run all commands there, go to your client and use:  \i commands.sql
