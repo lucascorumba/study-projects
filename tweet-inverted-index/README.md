@@ -1,7 +1,7 @@
 # Inverted Index
 >tl;dr this project involves data extraction from the Twitter API, data cleaning, data loading and creation of a inverted index of tweets text using PostgreSQL.
 
-## Overview
+## Background
 
 ### Indexes
 When retrieving values from tables, a *sequential scan* is **avoided whenever possible**. One way to improve queries performance is making **indexes**. This increase in performance comes with extra cost of memory and processing. 
@@ -15,12 +15,12 @@ CREATE INDEX name ON table (column);
 ```
 We can specify what kind of index we want to build with the `USING` clause:
 ```
-CREATE INDEX name ON table USING HASH (column);
+CREATE INDEX name ON table USING hash (column);
 ```
 This one created a **hash** index, also one of the forward indexes.
 
 Also, we are not limited to indexing columns (in fact, there are tons of quirks and options. To check all of them, see the [documentation](https://www.postgresql.org/docs/current/sql-createindex.html)), the key field(s) for the index can be specified as **expressions**. As long as we use the same expression in the *WHERE* clause, it will work just fine. 
-We will do that soon. But before that, let's take a better look at **inverted indexes**.
+We will do that in time. But before that, let's take a better look at **inverted indexes**.
 
 ### Inverted Indexes
 It's all a matter of *what you have* and *what are you trying to find*.
@@ -39,7 +39,7 @@ In this context, we are not interested in finding one specific row, but finding 
 For instance, we could query for texts that contain the word "SQL" and get back all the documents that match our query.
 In fact, one of the main uses for inverted indexes is fast text search.
 
-*To see all PostgreSQL indexes types, check the [documentation](https://www.postgresql.org/docs/current/indexes-types.html).*
+*To see all PostgreSQL indexes types, [check this link](https://www.postgresql.org/docs/current/indexes-types.html).*
 
 Just like B-trees for forward indexes, the preferred text search-type index is the **Generalized Inverse Index** (GIN). It provides exact matches and efficiency on lookups, but can be costly for inserts and updates.
 One workaround for this downside is to load all the data and build the GIN *later*. But if the insert/update overhead is too great and lookup is not a priority, a **Generalized Search Tree** (GiST) might be better suited.
@@ -47,31 +47,69 @@ One workaround for this downside is to load all the data and build the GIN *late
 >In this project, I built a GIN after extracting all the data I wanted.
 I went this way because my project outline was to load about 10.000 tweets and stop there. In a task with constant load of tweets and eventual lookups, a GiST would be a better idea.
 
-*More on that: [PostgreSQL documentation](https://www.postgresql.org/docs/11/textsearch-indexes.html).*
+*More on that [here](https://www.postgresql.org/docs/11/textsearch-indexes.html).*
 
 ### Making Inverted Indexes with PostgreSQL
 The statement to make a GIN (or GiST) index is really the same as the one used for forward indexes:
 ```
-CREATE INDEX name ON table USING GIN (column);
+CREATE INDEX name ON table USING gin(column);
 ```
 The difference lies in what we can use in the `column` field: a **`tsvector`**. 
 
 But what is a tsvector? To answer that we should dig into **Text Search Functions**.
 
 #### Text Search Functions
-From PostgreSQL [documentation](https://www.postgresql.org/docs/9.1/datatype-textsearch.html):
->"PostgreSQL provides two data types that are designed to support full text search, which is the activity of searching through a collection of natural-language documents to locate those that best match a query. The **tsvector** type **represents a document** in a form optimized for text search; the **tsquery** type similarly **represents a text query**."
+From the PostgreSQL [documentation](https://www.postgresql.org/docs/9.1/datatype-textsearch.html):
+>"PostgreSQL provides two data types that are designed to support full text search, which is the activity of searching through a collection of natural-language documents to locate those that best match a query. The **`tsvector`** type **represents a document** in a form optimized for text search; the **`tsquery`** type similarly **represents a text query**."
 
 Very nice. But let's take a look at it to get a better picture:
+
 ![demo 1 of to_tsvector function](../readme-imgs/to_tsvector-example-1.png)
-`to_tsvector()` takes two parameters, the **language** in what the document is written and the **document** itself. 
+
+`to_tsvector()` takes two arguments, the **language** in what the document is written and the **document** itself. 
 This function reduces a document text to *tsvector*, or put in another way, returns a list of words that represent the document. Sort of *reduces a document to its essence*.
 The numbers are the positions of the words in the document.
-Notice that not all words are returned, and even the ones that were are different. That's because they were **stemed**.
->Stemming is the process of reducing a word to its word stem.
+
+Notice that not all words are returned, and even the ones that were are different. That's because the function handled **stop words** and **stemming**.
+>Stop words are words considered insignificant (does not add much information to the text), therefore, **filtered out**.  
+
+>Stemming is the process of reducing a word to its **word stem**. For example both *'teaching'* and *'teaches'* would stem down to *'teach'*.
+
+![demo 2 of to_tsvector function](../readme-imgs/to_tsvector-example-2.png)
+**In the examples I wrote 'I like potatoes' and 'I would like more potatoes' in portuguese*
+
+Remember from the documentation quote that we also have a `ts_query` type. It works similarly to `ts_vector`, but we use it in `WHERE` clauses.
+
+![demo 1 of to_tsquery function](../readme-imgs/to_tsquery-example-1.png)
+
+With just one word, this is a simple `ts_query`. But we can build more complex ones, for example:
+- *'gostaria & batata'*: 'gostaria' **and** 'batata'
+- *'gostaria <-> batata'*: 'gostaria' **followed by** 'batata'
+- *'! gostaria & batata'*: **not** 'gostaria' **and** 'batata'
+- [...](https://www.postgresql.org/docs/9.1/datatype-textsearch.html#DATATYPE-TSQUERY)
+
+### Making Queries
+For the most typical `WHERE` clause we would use the `@@` operator ([there are many](https://www.postgresql.org/docs/9.1/functions-textsearch.html#FUNCTIONS-TEXTSEARCH)) to see if a `ts_query` matches a `ts_vector`.
+
+![text search operation](../readme-imgs/text-matching-example.png)
+
+Even though 'comer' ('eat') isn't contained in the searched `ts_vector`, 'comi' ('ate') is. So the operation returned **True** (`t`), as both words stem down to the same thing.
+
+### Back to Indexes
+That was a lot! Time to return to:
+>"Also, we are not limited to indexing columns, the key field(s) for the index can be specified as **expressions**."
+
+As the column type of a GIN index has to be of `tsvector` type, we can use the `to_tsvector` function as a expression when defining the index. That command would look like:
+```
+CREATE INDEX name ON table USING gin(to_tsvector('language', column));
+```
+Anyway, that is as far as we go with indexes for now. Next, let's take a look at the whole project.
+
+## Project Overview
+This all is very nice and fancy, but we need a good chunk of data to put it to work.
 
 ## Requirements
-(Optional) It's recommended to not install required packages globally, but locally under a project subfolder using `venv`: 
+It's recommended to not install required packages globally, but locally under a project subfolder using `venv`: 
 ```
 python3 -m venv venv
 
