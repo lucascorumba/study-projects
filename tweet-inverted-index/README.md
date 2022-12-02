@@ -8,7 +8,7 @@ When retrieving values from tables, a *sequential scan* is **avoided whenever po
 We can think of indexes as *hints* to where rows are located within a table. Or even data about location of data.
 >Actually, they are hints to which **block** contains the queried data, but delving into this is beyond the scope of this project. I think a "key-to-row hint" analogy should suffice.
 
-There are different kinds of indexes in PostgreSQL, and we can divide them in ==**forward indexes**==(the "normal" index) and ==**inverted indexes**==. 
+There are different kinds of indexes in PostgreSQL, and we can divide them in **forward indexes**(the "normal" index) and **inverted indexes**. 
 By default, a statement like the one below will create a **B-tree** index (one of the forward indexes), which is good for most cases.
 ```
 CREATE INDEX name ON table (column);
@@ -25,7 +25,7 @@ We will do that in time. But before that, let's take a better look at **inverted
 ### Inverted Indexes
 It's all a matter of *what you have* and *what are you trying to find*.
 In forward indexes, the general idea is that from a key (indexed) value, a row can be found. 
-Inverted indexes goes the other way around, we present a **query** and get back a list of *all* rows that match that query. 
+Inverted indexes go the other way around, we present a **query** and get back a list of *all* rows that match that query. 
 A forward index would store:
 ```
 { doc_1: ["SQL is awesome"] }
@@ -35,6 +35,7 @@ While an inverted index would store:
 { "SQL": [doc_1], "is": [doc_1], "awesome": [doc_1] }
 ```
 It works when you have a column with more than one thing, like a text (texts have multiple words). In a way, this column will have *multiple keys*. Other way to put it is that we get a mapping from the keyword to the document.
+
 In this context, we are not interested in finding one specific row, but finding a set of rows instead.
 For instance, we could query for texts that contain the word "SQL" and get back all the documents that match our query.
 In fact, one of the main uses for inverted indexes is fast text search.
@@ -62,7 +63,7 @@ But what is a tsvector? To answer that we should dig into **Text Search Function
 From the PostgreSQL [documentation](https://www.postgresql.org/docs/9.1/datatype-textsearch.html):
 >"PostgreSQL provides two data types that are designed to support full text search, which is the activity of searching through a collection of natural-language documents to locate those that best match a query. The **`tsvector`** type **represents a document** in a form optimized for text search; the **`tsquery`** type similarly **represents a text query**."
 
-Very nice. But let's take a look at it to get a better picture:
+Let's take a look at it to get a better picture:
 
 ![demo 1 of to_tsvector function](../readme-imgs/to_tsvector-example-1.png)
 
@@ -70,12 +71,13 @@ Very nice. But let's take a look at it to get a better picture:
 This function reduces a document text to *tsvector*, or put in another way, returns a list of words that represent the document. Sort of *reduces a document to its essence*.
 The numbers are the positions of the words in the document.
 
-Notice that not all words are returned, and even the ones that were are different. That's because the function handled **stop words** and **stemming**.
->Stop words are words considered insignificant (does not add much information to the text), therefore, **filtered out**.  
+Notice that not all words are returned, and even the ones that were are now different. That's because the function handled **stop words** and **stemming**.
+>Stop words are words considered insignificant (does not add much information to the text) and, therefore, **filtered out**.  
 
 >Stemming is the process of reducing a word to its **word stem**. For example both *'teaching'* and *'teaches'* would stem down to *'teach'*.
 
 ![demo 2 of to_tsvector function](../readme-imgs/to_tsvector-example-2.png)
+
 **In the examples I wrote 'I like potatoes' and 'I would like more potatoes' in portuguese*
 
 Remember from the documentation quote that we also have a `ts_query` type. It works similarly to `ts_vector`, but we use it in `WHERE` clauses.
@@ -93,20 +95,42 @@ For the most typical `WHERE` clause we would use the `@@` operator ([there are m
 
 ![text search operation](../readme-imgs/text-matching-example.png)
 
-Even though 'comer' ('eat') isn't contained in the searched `ts_vector`, 'comi' ('ate') is. So the operation returned **True** (`t`), as both words stem down to the same thing.
+Even though 'comer' ('eat') isn't contained in the searched `ts_vector`, 'comi' ('ate') is. So the operation returned `t` (**True**), as both words stem down to the same thing.
 
 ### Back to Indexes
-That was a lot! Time to return to:
+Time to return to:
 >"Also, we are not limited to indexing columns, the key field(s) for the index can be specified as **expressions**."
 
-As the column type of a GIN index has to be of `tsvector` type, we can use the `to_tsvector` function as a expression when defining the index. That command would look like:
+As the column type of a GIN index has to be of `tsvector` type, we can use the `to_tsvector` function as a expression when defining the index. That statement would look like:
 ```
 CREATE INDEX name ON table USING gin(to_tsvector('language', column));
 ```
 Anyway, that is as far as we go with indexes for now. Next, let's take a look at the whole project.
 
 ## Project Overview
-This all is very nice and fancy, but we need a good chunk of data to put it to work.
+This is all very nice and fancy, but we need a good chunk of data to put it to work.
+
+To fetch text data I used the [Twitter API v2](https://developer.twitter.com/en/docs/twitter-api). More specifically, the [mentions endpoint](https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-mentions). It returns all tweets mentioning a specified user. It also incudes replies to tweets made by the user we are checking on.
+
+Analyzing recent mentions can be a good way to gauge how people are interacting to some brand, person or company.
+
+This endpoint allow requests of 5 to 100 tweets. And up to the most recent 800 can be fetched if pagination is implemented. I used this range of tweets per request to define how often database writes would happen.
+
+*...to do*
+
+### About the Scripts
+- `get_tweets.py`
+    - Running this as the main script will make a request for 10 tweets. The request will be formatted and printed, but no changes are made, so we get to see all the data and metadata.
+    - This script has all the logic necessary to make a connection to the endpoint and build the request.
+    - The pagination logic is implemented here.
+- `hidden_dist.py` -> This one should be renamed to `hidden.py`
+    - It holds the credentials to make a connection to the database. Add yours and rename the file.
+- `utils.py`
+    - Helper functions.
+- `tweets_to_db.py`
+    - Makes connection to the database.
+    - Execute SQL commands
+    - 
 
 ## Requirements
 It's recommended to not install required packages globally, but locally under a project subfolder using `venv`: 
@@ -134,4 +158,7 @@ source venv/bin/activate
 ```
 ```
 export BEARER_TOKEN=<your_bearer_token>
+```
+```
+python3 tweets_to_db.py
 ```
