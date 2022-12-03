@@ -42,7 +42,8 @@ for tweets in get_tweets.paginate(url, params):
 
         # skip tweets without text left and ensures column size limit
         tweet_len = len(text)
-        if tweet_len < 1 or tweet_len > 280: continue
+        if tweet_len < 1 or tweet_len > 280: 
+            continue
 
         # get tweet id, author id, created time
         tweet_id, author_id, created_at = tweet['id'], tweet['author_id'], tweet['created_at']
@@ -53,7 +54,8 @@ for tweets in get_tweets.paginate(url, params):
         cur.execute(sql, (tweet_id, text, author_id, created_at))
 
         # count inserts into database
-        if cur.fetchone() is not None: write_count = write_count + 1
+        if cur.fetchone() is not None: 
+            write_count = write_count + 1
 
         #print(f"\nORIGINAL TWEET: {tweet['text']}\nCLEANED TWEET: {text}\n\n \
         #    TWEET {tweet['id']} - CREATED AT: {tweet['created_at']}\t BY: {tweet['author_id']}\n \
@@ -69,7 +71,7 @@ for tweets in get_tweets.paginate(url, params):
     print(f"\tTotal of {write_count} records written on disk\n")
 
     # conditions to automatically end retrieval - this endpoint returns the 800 most recent tweets
-    if write_count >= 650 or request_count >= 750:
+    if write_count >= 750 or request_count >= 750:
        break
 
 print("Closing database connection...")
