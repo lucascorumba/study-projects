@@ -20,7 +20,7 @@ def create_url():
     return f"https://api.twitter.com/2/users/{user_id}/mentions"
 
 
-def get_params(max_results=10):
+def get_params(max_results=5):
     """
     Returns query parameters.
     """
