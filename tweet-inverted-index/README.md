@@ -114,23 +114,66 @@ To fetch text data I used the [Twitter API v2](https://developer.twitter.com/en/
 
 Analyzing recent mentions can be a good way to gauge how people are interacting to some brand, person or company.
 
-This endpoint allow requests of 5 to 100 tweets. And up to the most recent 800 can be fetched if pagination is implemented. I used this range of tweets per request to define how often database writes would happen.
+This endpoint allow requests of 5 to 100 tweets. And up to the most recent 800 can be fetched if pagination is implemented. In the `get_tweets.get_params` call, we can specify how many tweets we're going to receive from each request using the `max_result` parameter.
 
-*...to do*
+To **improve performance** I used this range of tweets per request to define how often database writes would happen. Instead of writing tweets one at a time, it's best to do it in **batches** to avoid too many **database round trips**. Setting `max_result = 50` will get us 50 tweets per request and write *roughly* 50 in a single round trip.
+
+Due to the **cleaning process** of the tweets body, some end up being excluded, so it's not a guarantee that exactly 50 tweets will be written to the database every single batch. 
+
+This happens because in order to not end up adding meaningless words to the index (wasting memory and processing power), I chose to remove mentions inside the tweet body (e.g., *@someone*), some of which would still go through the `to_tsvector` filtering. I also removed *emojis*, so some tweets text would end up empty after the processing. These one are just skipped.
+
+>As I'm writing this I realized that `to_tsvector` would handle *emojis* removal just fine. However, giving that `utils.clean_text` is not a big overengineering (*and I liked the `.encode().decode()` trick*) I'll leave it like that.
+
+Since we are bound to the 800 most recent tweets and a 180 request per 15-minute window, there is a counter to keep track of tweets received in the responses. When we get close to this limit, the database connection is closed and the extraction process is interrupted to prevent going over the request rate limit. 
 
 ### About the Scripts
 - `get_tweets.py`
-    - Running this as the main script will make a request for 10 tweets. The request will be formatted and printed, but no changes are made, so we get to see all the data and metadata.
-    - This script has all the logic necessary to make a connection to the endpoint and build the request.
-    - The pagination logic is implemented here.
+    - Running this as the main script will make a request for 5 tweets. The response will be formatted and printed, but no changes are made, so we get to see all the data and metadata.
+    - This script has all the logic necessary to make a connection to the endpoint, build the request and pagination.
 - `hidden_dist.py` -> This one should be renamed to `hidden.py`
     - It holds the credentials to make a connection to the database. Add yours and rename the file.
 - `utils.py`
     - Helper functions.
 - `tweets_to_db.py`
     - Makes connection to the database.
-    - Execute SQL commands
-    - 
+    - Executes SQL commands and commits changes to the database.
+    - Calls helper functions to clean data.
+    - Control number of requests and writes.
+- `commands.sql`
+    - SQL statements used to create the index and test search performance.
+
+## Experimentation
+I'm really not into Twitter, so I didn't know about the trendy profiles. When I built this project the brazilian elections had happened a little while before, so I figured a lot of people would be talking about it. So a picked up the [@TSEjusbr](https://twitter.com/TSEjusbr) profile to make my tests.
+
+I won't be showing the actual content of the tweets (count of matches or tweet id at most), as I'm only interested in running benchmarks and I know this might be a sensitive topic. 
+
+With that being said, let's begin.
+
+The **schema** of the table:
+
+![table schema](../readme-imgs/inverted-index-tweet-table-schema.png)
+
+I collected about 10.000 tweets from November 22^nd^ to November 29^th^. It ain't much, but it's ~~honest work~~ enough to get PostgreSQL attention. 
+
+![tweet count and dates](../readme-imgs/inverted-index-count-dates.png)
+
+How many times 'eleição' ('election') and 'voto' ('vote') show up:
+
+![queries 1  and 2](../readme-imgs/inverted-index-query-1-2.png)
+
+And here we can see the improvement in performance. First, a forced sequential scan using *pattern matching*, and then, a query using the *index*.
+
+![query performance](../readme-imgs/inverted-index-seqscan-vs-index.png)
+
+We can even rank the results. The better the 'match', the greater is the score.
+
+![ranking](../readme-imgs/inverted-index-rank.png)
+
+And to wrap up things, I'm gonna bring in the potato jest one last time:
+
+![potato count](../readme-imgs/inverted-index-potato.png)
+
+If I had a nickel for every potato mention in a election deliberation, I would have two nickels. Which isn't a lot, but it's weird that it happened twice.
 
 ## Requirements
 It's recommended to not install required packages globally, but locally under a project subfolder using `venv`: 
@@ -153,9 +196,6 @@ pip install requests-oauthlib
 ```
 
 ## Usage
-```
-source venv/bin/activate
-```
 ```
 export BEARER_TOKEN=<your_bearer_token>
 ```
