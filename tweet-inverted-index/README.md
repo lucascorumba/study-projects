@@ -153,7 +153,7 @@ The **schema** of the table:
 
 ![table schema](../readme-imgs/inverted-index-tweet-table-schema.png)
 
-I collected about 10.000 tweets from November 22^nd^ to November 29^th^. It ain't much, but it's ~~honest work~~ enough to get PostgreSQL attention. 
+I collected about 10.000 tweets from November 22 to November 29. It ain't much, but it's ~~honest work~~ enough to get PostgreSQL attention and actually use the index.
 
 ![tweet count and dates](../readme-imgs/inverted-index-count-dates.png)
 
@@ -165,7 +165,7 @@ And here we can see the improvement in performance. First, a forced sequential s
 
 ![query performance](../readme-imgs/inverted-index-seqscan-vs-index.png)
 
-We can even rank the results. The better the 'match', the greater is the score.
+We can even [rank](https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-RANKING) the results. The better the 'match', the greater is the score.
 
 ![ranking](../readme-imgs/inverted-index-rank.png)
 
@@ -178,7 +178,7 @@ If I had a nickel for every potato mention in a election deliberation, I would h
 ## Requirements
 It's recommended to not install required packages globally, but locally under a project subfolder using `venv`: 
 ```
-python3 -m venv venv
+python3 -m venv venv-name
 
 # Windows
 venv-name\Scripts\activate.bat    # cmd
