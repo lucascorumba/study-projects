@@ -19,16 +19,13 @@ sql = "CREATE TABLE IF NOT EXISTS tweet(id BIGINT, body VARCHAR(280) NOT NULL, \
     author_id BIGINT NOT NULL, created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (id));"
 cur.execute(sql)
 
-print("Requesting tweets...")
-# get tweets from a single request (quantity specified in "max_results" parameter)
-tweets = get_tweets.get_tweets()
-
 # counter for inserts in the database / counter for total API requests
 write_count, request_count = int(), int()
 
 # get parameters to paginate()
 url, params = get_tweets.create_url(), get_tweets.get_params(max_results=50)
 
+print("Requesting tweets...")
 # move forward through pages of results
 for tweets in get_tweets.paginate(url, params):
     # iterate through all tweets in current 'page'
