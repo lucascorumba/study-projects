@@ -1,5 +1,5 @@
 # Inverted Index
->TL;DR this project consists of an ETL process that get data from the Twitter API, and the creation of a inverted index of tweets text using PostgreSQL to achieve full text search with superior performance. 
+>TL;DR this project consists of an ETL process that fetches data from the Twitter API, and the creation of a inverted index of tweets text using PostgreSQL to achieve superior performance on full text search. 
 
 >If you want to skip the background on indexes and inverse indexes, you can go straight to [Overview](https://github.com/lucascorumba/study-projects/tree/main/tweet-inverted-index#project-overview) to see a general outline of the project or to [Experimentation](https://github.com/lucascorumba/study-projects/tree/main/tweet-inverted-index#experimentation) to check out some queries and performance tests.
 
