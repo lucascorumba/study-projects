@@ -1,5 +1,3 @@
-#import re
-
 def remove_entities(text, entities, remove):
     """
     Receives original tweet and using the response data removes all entities
@@ -20,7 +18,7 @@ def remove_entities(text, entities, remove):
             pass
     return text
 
-
+#import re
 def clean_text(text):
     """
     Receives text and removes emojis, leading and trailing whitespaces,
@@ -31,7 +29,7 @@ def clean_text(text):
     # remove emojis, leading and trailing whitespaces
     text = text.encode('cp860', 'ignore').decode('cp860').strip()
     
-    # regex option: 
-    #   re.sub(r'\s+', ' ', text)
+    ## regex option for extra spaces: 
+    ## re.sub(r'\s+', ' ', text)
     # remove extra spaces between words
     return ' '.join(text.split())
