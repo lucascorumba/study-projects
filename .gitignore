@@ -1,3 +1,4 @@
 /tweet-inverted-index/hidden.py
-/*/venv/
-/*/__pycache__/
+/*/venv
+/*/__pycache__
+/*/*.csv
