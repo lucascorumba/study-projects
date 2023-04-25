@@ -26,7 +26,8 @@ uf_dict = {
 	'Santa Catarina': 'SC',
 	'São Paulo': 'SP',
 	'Sergipe': 'SE',
-	'Tocantins': 'TO'
+	'Tocantins': 'TO',
+	'GOIAS': 'GO'
 }
 
 # df.apply(lambda x: utils.get_uf(x, utils.uf_dict))
