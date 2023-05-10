@@ -38,3 +38,15 @@ def get_uf(state, dict):
 	if state in dict:
 		return dict[state]
 	return state
+
+from numpy import NaN
+def check_int(val):
+	"""
+	Recebe um valor numérico.
+	Caso seja contínuo: retorna NaN
+	Caso seja discreto: retorna o valor recebido
+	"""
+	temp = int(val)
+	if val != temp:
+		return NaN
+	return temp
