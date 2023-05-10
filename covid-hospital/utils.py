@@ -1,3 +1,5 @@
+from numpy import NaN
+
 # dict {Estado: UF}
 uf_dict = {
 	'Acre': 'AC',
@@ -39,14 +41,18 @@ def get_uf(state, dict):
 		return dict[state]
 	return state
 
-from numpy import NaN
+
 def check_int(val):
 	"""
 	Recebe um valor numérico.
 	Caso seja contínuo: retorna NaN
 	Caso seja discreto: retorna o valor recebido
 	"""
-	temp = int(val)
+	try:
+		temp = int(val)
+	# Lida com casos onde val = NaN
+	except ValueError:
+		return NaN
 	if val != temp:
 		return NaN
 	return temp
