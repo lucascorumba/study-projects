@@ -58,12 +58,3 @@ def check_int(val):
 	return temp
 
 
-def nan_targets(val, cols):
-	"""
-	Recebe um pandas.Series (val) e uma lista com colunas (cols).
-	Retorna uma lista contendo valores que serão substituidos.
-	"""
-	to_replace = list()
-	for col in cols:
-		to_replace.append(val[col])
-	return to_replace
