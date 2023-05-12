@@ -35,7 +35,7 @@ uf_dict = {
 # df.apply(lambda x: utils.get_uf(x, utils.uf_dict))
 def get_uf(state, dict):
 	"""
-	Retorna UF de acordo com nome do estado
+	Retorna UF de acordo com nome do estado.
 	"""
 	if state in dict:
 		return dict[state]
@@ -56,3 +56,14 @@ def check_int(val):
 	if val != temp:
 		return NaN
 	return temp
+
+
+def nan_targets(val, cols):
+	"""
+	Recebe um pandas.Series (val) e uma lista com colunas (cols).
+	Retorna uma lista contendo valores que serão substituidos.
+	"""
+	to_replace = list()
+	for col in cols:
+		to_replace.append(val[col])
+	return to_replace
