@@ -58,3 +58,12 @@ def check_int(val):
 	return temp
 
 
+def check_negative(val):
+	"""
+	Recebe um valor numérico.
+	Para valores menores que "0", retorna NaN.
+	Caso contrário, retorna o valor recebido.
+	"""
+	if val < 0:
+		return NaN
+	return val
