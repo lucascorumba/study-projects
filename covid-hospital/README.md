@@ -23,6 +23,7 @@ pip install notebook
 
 ```
 pip install matplotlib
+pip install seaborn
 ```
 
 ```
