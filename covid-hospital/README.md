@@ -22,6 +22,10 @@ pip install notebook
 ```
 
 ```
+pip install matplotlib
+```
+
+```
 # Para utilização do venv como kernel do Jupyter Notebook
 pip install ipykernel
 
