@@ -4,7 +4,8 @@
 | :--- | :---------- | :---- |
 | [Tideman](tideman) | Run a election using the ranked-choice voting system (DAG) | Python |
 | [Inverted Index](tweet-inverted-index) | Fetch tweets with Twitter API and make inverted index using PostgreSQL | ETL |
+| [IBM Analyst](ibm-analyst) | IBM Data Analyst Professional Certificate final project presentation | Analytics |
 | [Hospital Occupation](covid-hospital/analysis.ipynb) | *in progress* | Analytics |
 
 
->Note: All projects focused on `Analytics` will be written in portuguese
+>Note: With the exception of `ibm-analyst`, all projects focused on `Analytics` will be written in portuguese.
