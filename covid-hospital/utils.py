@@ -32,6 +32,24 @@ uf_dict = {
 	'GOIAS': 'GO'
 }
 
+# dict {UF: Região}
+region_dict =  {
+	'AC': 'Norte', 'AM': 'Norte', 'RO': 'Norte', 'RR': 'Norte', 'AP': 'Norte', 'PA': 'Norte', 'TO': 'Norte',
+	'MA': 'Nordeste', 'PI': 'Nordeste', 'RN': 'Nordeste', 'CE': 'Nordeste', 'PB': 'Nordeste', 'BA': 'Nordeste',
+	'PE': 'Nordeste', 'AL': 'Nordeste', 'SE': 'Nordeste', 'GO': 'Centro-Oeste', 'MT': 'Centro-Oeste',
+	'MS': 'Centro-Oeste', 'DF': 'Centro-Oeste',	'MG': 'Sudeste', 'SP': 'Sudeste', 'ES': 'Sudeste', 'RJ': 'Sudeste',
+	'PR': 'Sul', 'SC': 'Sul', 'RS': 'Sul'
+}
+
+# df.apply(lambda x: utils.get_region(x, utils.region_dict))
+def get_region(uf, dict):
+	"""
+	Retorna a região à qual a UF fornecida pertence
+	"""
+	if uf in dict:
+		return dict[uf]
+	return uf
+
 # df.apply(lambda x: utils.get_uf(x, utils.uf_dict))
 def get_uf(state, dict):
 	"""
