@@ -85,3 +85,14 @@ def check_negative(val):
 	if val < 0:
 		return NaN
 	return val
+
+
+def big_small(a, b):
+	"""
+	Recebe dois valores numéricos.
+	Retorna uma tupla com os mesmos valores
+	ordenados em (maior, menor).
+	"""
+	if a > b:
+		return a, b
+	return b, a
