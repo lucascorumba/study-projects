@@ -96,3 +96,11 @@ def big_small(a, b):
 	if a > b:
 		return a, b
 	return b, a
+
+def clear_lists(*args):
+	"""
+	Recebe uma quantidade variável de listas.
+	Apaga os dados de todas elas.
+	"""
+	for arg in args:
+		arg.clear()
