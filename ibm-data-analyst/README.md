@@ -1,4 +1,6 @@
 ![IBM data analyst badge](https://raw.githubusercontent.com/lucascorumba/study-projects/main/readme-imgs/ibm-data-analyst/ibm-badge.png)
+
+
 The IBM Data Analyst Professional Certificate is the final achievement of a courses series designed to provide job-ready skills for an entry-level data analyst role through practical courses. They focus on core principles and technologies like Excel, SQL, Python, Jupyter Notebooks, and BI tools.
 
 This certificate is granted after the successful completion of the following courses:
