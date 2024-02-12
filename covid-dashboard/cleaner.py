@@ -7,7 +7,7 @@ import utils
 
 def clean_fact(fact, lookup):
     """
-    Recebe dois nomes de arquivos .csv. Um contendo os registros que formarão a tabela fato e outro com dimensão.
+    Recebe dois nomes de arquivos .csv, um direcionando aos registros que formarão a tabela fato e outro para dimensão.
     Realiza o processamento dos dados em 'fact' e salva os dados preparados em um arquivo .csv.
     """
     # Suprime avisos no console sobre implementações futuras
@@ -19,9 +19,12 @@ def clean_fact(fact, lookup):
     cur_year = int(fact.split(".")[0].split('-')[1])
 
     ## Remover registros da tabela fato não mapeados 
-    # Corrige registros com erros de preenchimento no identificador  - remove os erros
-    #df['cnes'] = df[['cnes']].apply(pd.to_numeric, errors='coerce', downcast='unsigned').dropna()
-    df['cnes'] = pd.to_numeric(df['cnes'], errors='coerce', downcast='unsigned').dropna()
+    # Corrige registros com erros de preenchimento no identificador
+    df['cnes'] = pd.to_numeric(df['cnes'], errors='coerce', downcast='unsigned')
+    # Erros que não puderam ser corrigidos (marcados como NaN) são removidos
+    df.dropna(subset=['cnes'], inplace=True)
+    # Corrige tipo de dado da coluna 'cnes'
+    df['cnes'] = df['cnes'].astype(np.uint32)
 
     # Carregar tabela dimensão leitos
     df_lookup = pd.read_csv(f'{lookup}')
