@@ -23,7 +23,7 @@ def clean_fact(fact, lookup):
     df['cnes'] = pd.to_numeric(df['cnes'], errors='coerce', downcast='unsigned')
     # Erros que não puderam ser corrigidos (marcados como NaN) são removidos
     df.dropna(subset=['cnes'], inplace=True)
-    # Corrige tipo de dado da coluna 'cnes'
+    # Corrige tipo de dado da coluna 'cnes': float -> uint32
     df['cnes'] = df['cnes'].astype(np.uint32)
 
     # Carregar tabela dimensão leitos
@@ -106,8 +106,10 @@ def clean_fact(fact, lookup):
 
     ## Erro de preenchimento - seção "Correções Necessárias" do trabalho "covid-hospital"
 
-    # listas temporárias para valores de saída / id de 'cnes' marcadas para exclusão
-    jan_ago, set_dez, drop_cnes = list(), list(), list()
+    # listas temporárias para valores de saída / 
+    jan_ago, set_dez = list(), list()
+    # lista com ids de 'cnes' marcadas para exclusão - substituída pelo conjunto utils.faulty_cnes
+    # drop_cnes = list() 
     # limite para separar datas em jan/ago e set/dez
     sep_date = date(cur_year, 9, 1)
 
@@ -148,13 +150,13 @@ def clean_fact(fact, lookup):
                     continue
                 # coeficiente angular maior que 5 -> marca para exclusão
                 else: 
-                    drop_cnes.append(cnes)
+                    utils.faulty_cnes.add(cnes)
                     utils.clear_lists(jan_ago, set_dez)
                     continue
 
             # valor absoluto máximo aceitável para coeficientes -> linear: 50 | angular: 5
             if (abs(coef_a1) >= 5) or (abs(coef_a2) >= 5) or (abs(coef_l1) >= 50) or (abs(coef_l2) >= 50):
-                drop_cnes.append(cnes)
+                utils.faulty_cnes.add(cnes)
                 utils.clear_lists(jan_ago, set_dez)
                 continue
 
@@ -168,8 +170,8 @@ def clean_fact(fact, lookup):
                 if np.allclose(a, b, atol=1):
                     utils.clear_lists(jan_ago, set_dez)
                     continue      
-                drop_cnes.append(cnes)
+                utils.faulty_cnes.add(cnes)
             # limpa listas para próximo loop
             utils.clear_lists(jan_ago, set_dez)
-    df.drop(df.loc[df['cnes'].isin(drop_cnes)].index, inplace=True)
+    df.drop(df.loc[df['cnes'].isin(utils.faulty_cnes)].index, inplace=True)
     return df
