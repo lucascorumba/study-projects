@@ -13,7 +13,6 @@ def concat_df(file_names, is_lookup=False):
     if is_lookup:
         out_df = out_df.drop_duplicates(subset=['CNES'])
     out_df.to_csv(f'{file_names[0].split("-")[0]}-concat.csv', index=False, encoding='utf-8')
-    print('Arquivos concatenados com sucesso')
 
 
 # df.apply(lambda x: utils.get_region(x, utils.region_dict))
