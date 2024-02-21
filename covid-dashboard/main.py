@@ -16,10 +16,9 @@ def update_lookup():
     # Captura nome dos arquivos em uma lista de strings
     console = Console()
     args, out_files = sys.argv[2:], list()
-    console.print('Tratando dimensões...\n', style='cyan')
-    with console.status('[bold green]Trabalhando nas tarefas...') as status:
+    console.print('[i]\nTratando dimensões...\n[/i]')
+    with console.status('[bold green]Trabalhando nas tarefas...[/bold green]') as status:
         for arg in args:
-            console.print(f'[blue]{arg}[/blue]')
             # Abre arquivo            
             df = pd.read_csv(f'{arg}')
             # Seleciona colunas de interesse
@@ -32,11 +31,11 @@ def update_lookup():
             df.to_csv(f'{file_name}', index=False, encoding='utf-8')
             # Adiciona nome do arquivo em lista para concatenação
             out_files.append(file_name)
-            console.print(f'\t[green]OK[/green]')
-        console.print('Arquivos limpos com sucesso\n', style='bold green')
+            console.print(f'\t{arg} ---- [green]OK[/green]')
+        console.print('\nArquivos limpos com sucesso', style='green')
         # Concatena arquivos gerados
         utils.concat_df(out_files, True)
-        console.print('Arquivos concatenados com sucesso', style='bold green')
+        console.print('\nArquivos concatenados com sucesso', style='green')
 
 
 def update_fact(lookup):
@@ -49,10 +48,9 @@ def update_fact(lookup):
     # Captura nome dos arquivos em uma lista de strings
     console = Console()
     args, out_files = sys.argv[2:], list()
-    console.print('Tratando dados...\n', style='cyan')
-    with console.status('[bold green]Trabalhando nas tarefas...') as status:
+    console.print('[i]\nTratando dados...\n[/i]')
+    with console.status('[bold green]Trabalhando nas tarefas...[/bold green]') as status:
         for arg in args:
-            console.print(f'[blue]{arg}[/blue]')
             # Gera nome para arquivo processado
             file_name = f'{arg.split(".")[0]}-clean.csv'
             # Adiciona nome do arquivo em lista para concatenação
@@ -61,11 +59,11 @@ def update_fact(lookup):
             df = cleaner.clean_fact(arg, lookup)        
             # Salva novo .csv
             df.to_csv(f'{file_name}', index=False, encoding='utf-8')        
-            console.print(f'\t[green]OK[/green]')
-        console.print('Processamento concluído com sucesso\n', style='bold green')
+            console.print(f'\t{arg} ---- [green]OK[/green]')
+        console.print('\nProcessamento concluído com sucesso', style='green')
         # Concatena arquivos processados
         utils.concat_df(out_files)
-        console.print('Arquivos concatenados com sucesso', style='bold green')
+        console.print('\nArquivos concatenados com sucesso', style='green')
 
 
 if __name__ == "__main__":

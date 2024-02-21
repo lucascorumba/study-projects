@@ -10,18 +10,18 @@ Algumas diferenças importantes:
 * Em vez de um .ipynb, o processamento será automatizado com scripts .py 
 * Toda visualização será feita no Power BI
 
-Segue um pseudocódigo do planejamento até então:
-1. Download dos arquivos contendo registros dos seguintes anos:
+Segue um planejamento até então:
+- [x] Download dos arquivos contendo registros dos seguintes anos:
     * 2020, 2021 e 2022
-2. Download dos dados referentes às unidades de atendimento
-    * Criação de tabela fato "cnes"
-3. Remoção de registros feitos por unidades de atendimento não mapeadas no item "2"
-4. Processamento de dados sobre ocupação - limpeza e remoção de anomalias
+- [x] Download dos dados referentes às unidades de atendimento
+    * Criação de tabela dimensão "cnes"
+- [x] Remoção de registros feitos por unidades de atendimento não mapeadas na tebela dimensão
+- [x] Processamento de dados sobre ocupação - limpeza e remoção de anomalias
     * Método aplicado no projeto "covid-hospital"
     * Atenção na implementação - o arquivo agora possui diversos anos
-5. Conexão com Power BI
-6. Junção dos registros restantes em uma única tabela fato "ocupação" utilizando Power Query
-7. Esquematizar scripts .py para atualizar sob comando a base de dados carregada no Power BI
+    * unificação dos dados para criação da tabela fato "ocupação"
+- [ ] Conexão com Power BI
+- [x] Esquematizar scripts .py para atualizar, sob comando, a base de dados carregada no Power BI
 
 # Requisitos
 É recomendado utilizar ambientes virtuais para instalação de pacotes requeridos pelo projeto.
@@ -42,4 +42,8 @@ source venv-name/bin/activate
 
 ```
 pip install pandas
+```
+```
+# https://github.com/Textualize/rich
+pip install rich
 ```
