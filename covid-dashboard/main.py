@@ -22,7 +22,7 @@ def update_lookup():
             # Abre arquivo            
             df = pd.read_csv(f'{arg}')
             # Seleciona colunas de interesse
-            df = df[['CNES', 'NOME ESTABELECIMENTO', 'MUNICIPIO', 'UF', 'REGIAO']]
+            df = df[['CNES', 'NOME ESTABELECIMENTO', 'MUNICIPIO', 'UF']]
             # Remove redundâncias
             df = df.drop_duplicates(subset=['CNES'])
             # Cria nome para arquivo processado

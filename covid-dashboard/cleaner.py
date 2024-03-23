@@ -42,7 +42,7 @@ def clean_fact(fact, lookup):
     df.drop(columns=to_drop_numeric, inplace=True)
 
     # Adiciona coluna 'uf' com base no nome do estado
-    df['uf'] = df['estado'].apply(lambda x: utils.get_uf(x, utils.uf_dict))
+    #df['uf'] = df['estado'].apply(lambda x: utils.get_uf(x, utils.uf_dict))
 
     ## Substituíndo outliers por NaN
     # Leitos Clínicos
@@ -102,7 +102,7 @@ def clean_fact(fact, lookup):
     df['totalAltas'] = df['saidaSuspeitaAltas'] + df['saidaConfirmadaAltas']
     df['totalObitos'] = df['saidaSuspeitaObitos'] + df['saidaConfirmadaAltas']
     df['totalSaidas'] = df['totalAltas'] + df['totalObitos']
-    df['regiao'] = df['uf'].apply(lambda x: utils.get_region(x, utils.region_dict))
+    #df['regiao'] = df['uf'].apply(lambda x: utils.get_region(x, utils.region_dict))
 
     ## Erro de preenchimento - seção "Correções Necessárias" do trabalho "covid-hospital"
 
