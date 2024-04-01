@@ -37,6 +37,17 @@ def clean_fact(fact, lookup):
     df.drop(df.loc[df['estado'] != df['estadoNotificacao']].index, inplace=True)
     df.drop(df.loc[df['municipio'] != df['municipioNotificacao']].index, inplace=True)
 
+    # Para comportar as alterações feitas de em arquivos a partir de 2022
+    if cur_year >= 2022:
+        df['ocupacaoConfirmadoCli'] = df['ocupacaoHospitalarCli']
+        df['ocupacaoConfirmadoUti'] = df['ocupacaoHospitalarUti']
+        # Mapeia registros onde 'OcupacaoHospitalar...' é ausente
+        mark_cli = df['ocupacaoHospitalarCli'].isna()
+        mark_uti = df['ocupacaoHospitalarUti'].isna()
+        # Mantém como NaN registros que orginalmente possuiam NaN
+        df.loc[~mark_cli, 'ocupacaoSuspeitoCli'] = 0
+        df.loc[~mark_uti, 'ocupacaoSuspeitoUti'] = 0
+
     # Remoção de campos não usados
     to_drop_numeric = ['Unnamed: 0', 'ocupacaoCovidUti', 'ocupacaoCovidCli', 'ocupacaoHospitalarUti', 'ocupacaoHospitalarCli']
     df.drop(columns=to_drop_numeric, inplace=True)
@@ -104,6 +115,9 @@ def clean_fact(fact, lookup):
     df['totalSaidas'] = df['totalAltas'] + df['totalObitos']
     #df['regiao'] = df['uf'].apply(lambda x: utils.get_region(x, utils.region_dict))
 
+    to_drop = ['ocupacaoSuspeitoCli', 'ocupacaoConfirmadoCli', 'ocupacaoSuspeitoUti', 'ocupacaoConfirmadoUti']
+    df.drop(columns=to_drop, inplace=True)
+    
     ## Erro de preenchimento - seção "Correções Necessárias" do trabalho "covid-hospital"
 
     # listas temporárias para valores de saída / 
