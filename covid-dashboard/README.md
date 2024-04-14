@@ -30,7 +30,7 @@ Algumas diferenças importantes:
 - [ ] Gravação da demonstração do dashboard finalizado
 - [ ] Finalização do README.md
 
-# Preparação de dados
+# Processamento
 Com os dados brutos obtidos, os scripts realizam o processamento, limpeza e unificação dos dados.
 Primeiro preparamos o arquivo que será base para a tabela dimensão de leitos:
 ![execução do processo de limpeza e unificação da tabela dimensão](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/record-lookup.gif?raw=true)
@@ -48,7 +48,7 @@ O dashboard conta com 3 páginas, cada uma com um objetivo diferente.
 3. Detalhamento de unidades de saúde
 
 ## Overview
-![dashboard página 1 - visão geral]()
+![dashboard página 1 - visão geral](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/overview-8x.gif?raw=true)
 ## Leitos Clínicos e Leitos de UTI
 ![dashboard página 2 - comparação entre ocupação de leitos clínicos e leitos UTI]()
 ## Detalhamento de Unidades de Saúde
@@ -57,10 +57,10 @@ O dashboard conta com 3 páginas, cada uma com um objetivo diferente.
 # Modelagem
 ![esquema da modelagem de dados]()
 
-# Obtenção dos dados
+# Fonte de dados
 Da mesma maneira como feito no projeto [covid-hospital](https://github.com/lucascorumba/study-projects/tree/main/covid-hospital) os dados foram coletados do [Portal Brasileiro de Dados Abertos](https://dados.gov.br/dados/conjuntos-dados/registro-de-ocupacao-hospitalar-covid-19). São dados relacionados a ocupação hospitalar com foco em casos suspeitos e confirmados de COVID-19. No momento a fonte dispõe de registros dos anos 2020, 2021 e 2022. Não há menção se os dados serão atualizados.
 
-Ainda da mesma fonte, temos outro conjunto de dados com informações sobre unidades de saúde, contendo informações sobre nome e localidade. Informações sobre o tamanho da população de cada estado foram retiradas deste [painel](https://infoms.saude.gov.br/extensions/covid-19_html/covid-19_html.html) do Ministério da Saúde.
+Ainda do [Portal Brasileiro de Dados Abertos](https://dados.gov.br/dados/conjuntos-dados/registro-de-ocupacao-hospitalar-covid-19), temos outro [endpoint](https://dados.gov.br/dados/conjuntos-dados/hospitais-e-leitos) fornecendo dados sobre unidades de saúde, contendo informações sobre nome e localidade. Informações sobre o tamanho da população de cada estado foram retiradas deste [painel](https://infoms.saude.gov.br/extensions/covid-19_html/covid-19_html.html) do Ministério da Saúde.
 
 | Conjunto de dados | Data de coleta |
 | ----------------- | -------------- |
