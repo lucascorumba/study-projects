@@ -27,7 +27,7 @@ Algumas diferenças importantes:
 - [x] Criação de medidas com DAX
 - [x] Construção dos visuais no dashboard
 - [x] Gravação da demonstração do processamento de dados
-- [ ] Gravação da demonstração do dashboard finalizado
+- [x] Gravação da demonstração do dashboard finalizado
 - [ ] Finalização do README.md
 
 # Processamento
@@ -49,13 +49,44 @@ O dashboard conta com 3 páginas, cada uma com um objetivo diferente.
 
 ## Overview
 ![dashboard página 1 - visão geral](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/overview-8x.gif?raw=true)
+Aqui se encontram **informações gerais** e diversas KPIs. Todas as informações a seguir podem ser filtradas por **data** e **localidade** simultaneamente:
+* Tamanho da população
+* Ocupação acumulada
+* Média de ocupação hospitalar
+* Óbitos acumulados
+* Taxa de óbitos por 100 mil habitantes
+* Número de unidades de saúde mapeadas
+* Número de municípios mapeados
+* Relação entre número de altas e número de óbitos
+* % do total de óbitos em cada localidade
+* Estados ordenados por ocupação acumulada
+
 ## Leitos Clínicos e Leitos de UTI
-![dashboard página 2 - comparação entre ocupação de leitos clínicos e leitos UTI](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/type-8x.gif?raw=true)
+![dashboard página 2 - comparação entre ocupação de leitos clínicos e leitos UTI](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/type-7x.gif?raw=true)
+Essa página é dedicada a comparação entre **leitos clínicos e leitos de UTI**. Todas as informações podem ser filtradas por **data** e **localidade** simultaneamente:
+* Ocupação acumulada por região
+* Ocupação acumulada de leitos clínicos e leitos UTI
+* Média de ocupação de leitos clínicos e leitos UTI
+* Correlação entre ocupação de leitos clínicos e leitos UTI
+* Proporção entre ocupação de leitos clínicos e leitos UTI
+* Ocupação de leitos clínicos
+* Ocupação de leitos UTI
+
 ## Detalhamento de Unidades de Saúde
 ![dashboard página 3 - detalhamento indvidual de unidades de saúde](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/single-8x.gif?raw=true)
-
-# Modelagem
-![esquema da modelagem de dados]()
+Aqui se encontram detalhes de **unidades de saúde**. As unidades com maior ocupação acumulada são dispostas em ordem na lista. Todas as informações podem ser filtradas por **data** e **localidade** simultaneamente:
+* Nome, localidade e código da unidade de saúde em questão
+* Ocupação total
+* Ocupação de leitos clínicos
+* Ocupação de leitos UTI
+* Ocupação por trimestre
+* Média de ocupação por trimestre
+* Ocupação total por trimestre
+* Comparação da ocupação com o trimestre anterior
+* Comparação da média com o trimestre anterior
+* Relação entre número de altas e número de óbitos por unidade de saúde
+* Total de óbitos por unidade de saúde
+* Média de ocupação por unidade de saúde
 
 # Fonte de dados
 Da mesma maneira como feito no projeto [covid-hospital](https://github.com/lucascorumba/study-projects/tree/main/covid-hospital) os dados foram coletados do [Portal Brasileiro de Dados Abertos](https://dados.gov.br/dados/conjuntos-dados/registro-de-ocupacao-hospitalar-covid-19). São dados relacionados a ocupação hospitalar com foco em casos suspeitos e confirmados de COVID-19. No momento a fonte dispõe de registros dos anos 2020, 2021 e 2022. Não há menção se os dados serão atualizados.
