@@ -52,7 +52,7 @@ O dashboard conta com 3 páginas, cada uma com um objetivo diferente.
 ## Leitos Clínicos e Leitos de UTI
 ![dashboard página 2 - comparação entre ocupação de leitos clínicos e leitos UTI](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/type-8x.gif?raw=true)
 ## Detalhamento de Unidades de Saúde
-![dashboard página 3 - detalhamento indvidual de unidades de saúde](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/type-8x.gif?raw=true)
+![dashboard página 3 - detalhamento indvidual de unidades de saúde](https://github.com/lucascorumba/study-projects/blob/main/readme-imgs/covid-dashboard/single-8x.gif?raw=true)
 
 # Modelagem
 ![esquema da modelagem de dados]()
