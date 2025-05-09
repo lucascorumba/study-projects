@@ -10,8 +10,9 @@ In addition, each node can hold a `terminal` state, meaning it is marking the en
 
 The below image illustrates a trie storing the strings *"ABC"*, *"ABCD"*, *"ACT"*, *"C"* and *"DO"*.
 
-![trie-example](../readme-imgs/dictionary-trie/trie.png)
->In this image, the terminal nodes are marked as green. 
+![trie-example](https://raw.githubusercontent.com/lucascorumba/study-projects/refs/heads/main/readme-imgs/dictionary-trie/trie.png)
+
+>Terminal nodes are marked as green. 
 
 
 ## About the Scripts
