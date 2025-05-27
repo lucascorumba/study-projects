@@ -22,7 +22,7 @@ def get_params(base_currency, get_symbols):
 
 def endpoint_latest(params):
     """
-    Makes request to 'latest' exchangerates API endpoint. Returns response in json format.
+    Makes request to 'latest' exchangerates API endpoint. Returns response object.
     """
     response = requests.get("https://api.exchangeratesapi.io/v1/latest", params=params)
     print(f"Status: {response.status_code}") 
