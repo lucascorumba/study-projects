@@ -18,7 +18,7 @@ def runner(db_path):
     # Create table on the first run, otherwise, ignore
     cur.execute(
         "CREATE TABLE IF NOT EXISTS \
-        brl_prices(timestamp INTEGER, date TEXT, symbol TEXT, price NUMERIC);"
+        brl_prices(timestamp INTEGER, symbol TEXT, price NUMERIC);"
     )
 
     # Data transfomation - calculates the price in BRL of all fetched symbols
