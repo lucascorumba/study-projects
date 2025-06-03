@@ -50,4 +50,7 @@ python3 get_rates.py
 
 # To query the database through .py script
 python3 query_db.py
+
+# To schedule fetches
+python3 schedule.py
 ```
