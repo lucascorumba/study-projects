@@ -31,7 +31,7 @@ while schedules:
     try:
         now = datetime.now()
         if now > schedules[0]:
-            print(f"===> Started fetching process at {now.time()}\n")
+            print(f"===> Started process at {now.time()}\n")
             schedules.pop(0)
             rates = get_rates.runner("currency.db")
             print()
