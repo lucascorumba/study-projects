@@ -37,7 +37,8 @@ def get_rates():
     Makes call to 'latest' endpoint and get symbols rate.
     The free plan of this API just allows use of "EUR" as base currency. 
     """
-    params = get_params("EUR", ("BRL", "USD", "ARS", "AUD", "BTC", "GBP", "HKD", "JPY", "XAU", "XAG", "CNH"))
+    #params = get_params("EUR", ("BRL", "USD", "ARS", "AUD", "BTC", "GBP", "HKD", "JPY", "XAU", "XAG", "CNH"))
+    params = get_params("EUR", ("BRL", "USD", "BTC", "GBP", "XAU", "XAG"))
     response = endpoint_latest(params)
     return response.json()
 
